@@ -8,16 +8,24 @@ from pages.cart_page import CartPage
 from utils.data_reader import read_excel_data
 
 
-@pytest.mark.smoke
-def test_login(driver):
-    """TC001 - Valid login"""
+# ── Helper: login function reused across tests ──────
+def do_login(driver):
     page = LoginPage(driver)
     page.open()
     page.login("standard_user", "secret_sauce")
-    # Explicit wait — moves on the moment inventory URL appears
     WebDriverWait(driver, 10).until(
         lambda d: "inventory" in d.current_url
     )
+
+
+# ══════════════════════════════════════════════════
+# SMOKE TESTS
+# ══════════════════════════════════════════════════
+
+@pytest.mark.smoke
+def test_login(driver):
+    """TC001 - Valid login"""
+    do_login(driver)
     assert "inventory" in driver.current_url
     print("\n✅ TC001 PASSED: Login successful")
 
@@ -25,28 +33,55 @@ def test_login(driver):
 @pytest.mark.smoke
 def test_add_to_cart(driver):
     """TC002 - Add product to cart"""
+    do_login(driver)
     page = InventoryPage(driver)
     page.add_backpack_to_cart()
     assert page.get_cart_count() == "1"
     print("\n✅ TC002 PASSED: Product added to cart")
 
 
+@pytest.mark.smoke
+def test_logout(driver):
+    """TC003 - Logout"""
+    do_login(driver)
+    page = InventoryPage(driver)
+    page.logout()
+    WebDriverWait(driver, 10).until(
+        lambda d: d.current_url == "https://www.saucedemo.com/"
+    )
+    assert driver.current_url == "https://www.saucedemo.com/"
+    print("\n✅ TC003 PASSED: Logged out")
+
+
+# ══════════════════════════════════════════════════
+# REGRESSION TESTS
+# ══════════════════════════════════════════════════
+
 @pytest.mark.regression
 def test_view_cart(driver):
-    """TC003 - View cart item"""
+    """TC004 - View cart item"""
+    do_login(driver)
     page = InventoryPage(driver)
+    page.add_backpack_to_cart()
     page.go_to_cart()
     WebDriverWait(driver, 10).until(
         lambda d: "cart" in d.current_url
     )
     cart = CartPage(driver)
     assert cart.get_item_name() == "Sauce Labs Backpack"
-    print("\n✅ TC003 PASSED: Correct item in cart")
+    print("\n✅ TC004 PASSED: Correct item in cart")
 
 
 @pytest.mark.regression
 def test_checkout(driver):
-    """TC004 - Checkout and place order"""
+    """TC005 - Checkout and place order"""
+    do_login(driver)
+    page = InventoryPage(driver)
+    page.add_backpack_to_cart()
+    page.go_to_cart()
+    WebDriverWait(driver, 10).until(
+        lambda d: "cart" in d.current_url
+    )
     cart = CartPage(driver)
     cart.click_checkout()
     WebDriverWait(driver, 10).until(
@@ -63,20 +98,12 @@ def test_checkout(driver):
         lambda d: "checkout-complete" in d.current_url
     )
     assert cart.get_confirmation() == "Thank you for your order!"
-    print("\n✅ TC004 PASSED: Order placed successfully")
+    print("\n✅ TC005 PASSED: Order placed successfully")
 
 
-@pytest.mark.smoke
-def test_logout(driver):
-    """TC005 - Logout"""
-    page = InventoryPage(driver)
-    page.logout()
-    WebDriverWait(driver, 10).until(
-        lambda d: d.current_url == "https://www.saucedemo.com/"
-    )
-    assert driver.current_url == "https://www.saucedemo.com/"
-    print("\n✅ TC005 PASSED: Logged out")
-
+# ══════════════════════════════════════════════════
+# NEGATIVE TESTS
+# ══════════════════════════════════════════════════
 
 @pytest.mark.negative
 def test_wrong_password(driver):
@@ -97,6 +124,10 @@ def test_empty_login(driver):
     assert "Username is required" in page.get_error_message()
     print("\n✅ TC007 PASSED: Empty fields blocked")
 
+
+# ══════════════════════════════════════════════════
+# DATA DRIVEN TESTS
+# ══════════════════════════════════════════════════
 
 @pytest.mark.parametrize("row", read_excel_data("LoginData"))
 def test_login_data_driven(driver, row):
