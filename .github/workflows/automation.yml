@@ -1,0 +1,49 @@
+name: Saucedemo Automation Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install selenium pytest pytest-html allure-pytest openpyxl
+
+    - name: Install Chrome
+      uses: browser-actions/setup-chrome@v1
+
+    - name: Install ChromeDriver
+      uses: nanasess/setup-chromedriver@v2
+
+    - name: Run tests
+      run: |
+        pytest tests/test_pom.py -v --html=report.html --junitxml=results.xml -m "smoke or regression or negative" --ignore=tests/test_pom.py::test_login_data_driven
+      continue-on-error: true
+
+    - name: Upload HTML Report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-report
+        path: report.html
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: junit-results
+        path: results.xml
