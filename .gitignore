@@ -17,5 +17,5 @@ screenshots/
 # ChromeDriver (don't push binary)
 chromedriver.exe
 
-# Test data (optional)
-test_data.xlsx
+# Test data (keep this for CI/CD)
+# test_data.xlsx

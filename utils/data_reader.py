@@ -1,7 +1,12 @@
 import openpyxl
+import os
 
 def read_excel_data(sheet_name):
-    wb = openpyxl.load_workbook(r"C:\Users\gpika\Desktop\demo\test_data.xlsx")
+    # Use relative path — works on both Windows and Linux (GitHub Actions)
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_path = os.path.join(base_dir, "test_data.xlsx")
+
+    wb = openpyxl.load_workbook(file_path)
     ws = wb[sheet_name]
     headers = [cell.value for cell in ws[1]]
     data = []
