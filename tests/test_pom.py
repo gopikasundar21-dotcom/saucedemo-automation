@@ -1,5 +1,4 @@
 import pytest
-import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pages.login_page import LoginPage
@@ -8,7 +7,7 @@ from pages.cart_page import CartPage
 from utils.data_reader import read_excel_data
 
 
-# ── Helper: login function reused across tests ──────
+# ── Helper: reusable login ───────────────────────────
 def do_login(driver):
     page = LoginPage(driver)
     page.open()
@@ -40,26 +39,13 @@ def test_add_to_cart(driver):
     print("\n✅ TC002 PASSED: Product added to cart")
 
 
-@pytest.mark.smoke
-def test_logout(driver):
-    """TC003 - Logout"""
-    do_login(driver)
-    page = InventoryPage(driver)
-    page.logout()
-    WebDriverWait(driver, 10).until(
-        lambda d: d.current_url == "https://www.saucedemo.com/"
-    )
-    assert driver.current_url == "https://www.saucedemo.com/"
-    print("\n✅ TC003 PASSED: Logged out")
-
-
 # ══════════════════════════════════════════════════
 # REGRESSION TESTS
 # ══════════════════════════════════════════════════
 
 @pytest.mark.regression
 def test_view_cart(driver):
-    """TC004 - View cart item"""
+    """TC003 - View cart and verify item"""
     do_login(driver)
     page = InventoryPage(driver)
     page.add_backpack_to_cart()
@@ -69,12 +55,12 @@ def test_view_cart(driver):
     )
     cart = CartPage(driver)
     assert cart.get_item_name() == "Sauce Labs Backpack"
-    print("\n✅ TC004 PASSED: Correct item in cart")
+    print("\n✅ TC003 PASSED: Correct item in cart")
 
 
 @pytest.mark.regression
 def test_checkout(driver):
-    """TC005 - Checkout and place order"""
+    """TC004 - Checkout and place order"""
     do_login(driver)
     page = InventoryPage(driver)
     page.add_backpack_to_cart()
@@ -98,7 +84,20 @@ def test_checkout(driver):
         lambda d: "checkout-complete" in d.current_url
     )
     assert cart.get_confirmation() == "Thank you for your order!"
-    print("\n✅ TC005 PASSED: Order placed successfully")
+    print("\n✅ TC004 PASSED: Order placed successfully")
+
+
+@pytest.mark.regression
+def test_logout(driver):
+    """TC005 - Logout"""
+    do_login(driver)
+    page = InventoryPage(driver)
+    page.logout()
+    WebDriverWait(driver, 10).until(
+        lambda d: d.current_url == "https://www.saucedemo.com/"
+    )
+    assert driver.current_url == "https://www.saucedemo.com/"
+    print("\n✅ TC005 PASSED: Logged out")
 
 
 # ══════════════════════════════════════════════════
