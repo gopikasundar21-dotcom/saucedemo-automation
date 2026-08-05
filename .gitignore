@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Allure
+allure_results/
+
+# Reports
+report.html
+TestExecutionReport.xlsx
+
+# Screenshots (optional — remove this line if you want to track screenshots)
+screenshots/
+
+# ChromeDriver (don't push binary)
+chromedriver.exe
+
+# Test data (optional)
+test_data.xlsx
