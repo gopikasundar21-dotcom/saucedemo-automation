@@ -24,5 +24,5 @@ class LoginPage:
         self.wait.until(EC.element_to_be_clickable(self.LOGIN_BTN)).click()
 
     def get_error_message(self):
-        self.wait.until(EC.presence_of_element_located(self.ERROR_MSG))
+        self.wait.until(EC.visibility_of_element_located(self.ERROR_MSG))
         return self.driver.find_element(*self.ERROR_MSG).text

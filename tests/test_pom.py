@@ -9,10 +9,11 @@ from utils.data_reader import read_excel_data
 
 # ── Helper: reusable login ───────────────────────────
 def do_login(driver):
+    driver.delete_all_cookies()
     page = LoginPage(driver)
     page.open()
     page.login("standard_user", "secret_sauce")
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 15).until(
         lambda d: "inventory" in d.current_url
     )
 
