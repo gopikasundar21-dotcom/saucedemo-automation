@@ -21,7 +21,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install selenium pytest pytest-html allure-pytest openpyxl
+        pip install selenium pytest pytest-html allure-pytest openpyxl pytest-ordering
 
     - name: Install Chrome
       uses: browser-actions/setup-chrome@v1

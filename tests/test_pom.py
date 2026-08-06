@@ -23,6 +23,7 @@ def do_login(driver):
 # ══════════════════════════════════════════════════
 
 @pytest.mark.smoke
+@pytest.mark.order(1)
 def test_login(driver):
     """TC001 - Valid login"""
     do_login(driver)
@@ -31,6 +32,7 @@ def test_login(driver):
 
 
 @pytest.mark.smoke
+@pytest.mark.order(2)
 def test_add_to_cart(driver):
     """TC002 - Add product to cart"""
     do_login(driver)
@@ -45,6 +47,7 @@ def test_add_to_cart(driver):
 # ══════════════════════════════════════════════════
 
 @pytest.mark.regression
+@pytest.mark.order(3)
 def test_view_cart(driver):
     """TC003 - View cart and verify item"""
     do_login(driver)
@@ -60,6 +63,7 @@ def test_view_cart(driver):
 
 
 @pytest.mark.regression
+@pytest.mark.order(4)
 def test_checkout(driver):
     """TC004 - Checkout and place order"""
     do_login(driver)
@@ -89,6 +93,7 @@ def test_checkout(driver):
 
 
 @pytest.mark.regression
+@pytest.mark.order(5)
 def test_logout(driver):
     """TC005 - Logout"""
     do_login(driver)
@@ -106,6 +111,7 @@ def test_logout(driver):
 # ══════════════════════════════════════════════════
 
 @pytest.mark.negative
+@pytest.mark.order(6)
 def test_wrong_password(driver):
     """TC006 - Wrong password shows error"""
     page = LoginPage(driver)
@@ -116,6 +122,7 @@ def test_wrong_password(driver):
 
 
 @pytest.mark.negative
+@pytest.mark.order(7)
 def test_empty_login(driver):
     """TC007 - Empty fields shows error"""
     page = LoginPage(driver)
