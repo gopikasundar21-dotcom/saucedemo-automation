@@ -15,6 +15,15 @@ class InventoryPage:
         self.wait = WebDriverWait(driver, 10)
 
     def add_backpack_to_cart(self):
+        # Remove item first if already in cart (shared session state)
+        try:
+            remove_btn = self.driver.find_element(
+                By.ID, "remove-sauce-labs-backpack"
+            )
+            remove_btn.click()
+        except:
+            pass
+        # Now add to cart
         self.wait.until(EC.element_to_be_clickable(self.ADD_BACKPACK)).click()
 
     def get_cart_count(self):
