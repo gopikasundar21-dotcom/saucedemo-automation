@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
@@ -31,7 +31,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest tests/test_pom.py -v --html=report.html --junitxml=results.xml -m "smoke or regression or negative" --ignore=tests/test_pom.py::test_login_data_driven
+        pytest tests/test_pom.py -v --html=report.html --junitxml=results.xml
       continue-on-error: true
 
     - name: Upload HTML Report
