@@ -19,10 +19,16 @@ class LoginPage:
         self.wait.until(EC.element_to_be_clickable(self.LOGIN_BTN))
 
     def login(self, username, password):
-        self.wait.until(EC.element_to_be_clickable(self.USERNAME)).send_keys(username)
-        self.wait.until(EC.element_to_be_clickable(self.PASSWORD)).send_keys(password)
+        user_field = self.wait.until(EC.element_to_be_clickable(self.USERNAME))
+        user_field.clear()
+        user_field.send_keys(username)
+        pass_field = self.wait.until(EC.element_to_be_clickable(self.PASSWORD))
+        pass_field.clear()
+        pass_field.send_keys(password)
         self.wait.until(EC.element_to_be_clickable(self.LOGIN_BTN)).click()
 
     def get_error_message(self):
-        self.wait.until(EC.visibility_of_element_located(self.ERROR_MSG))
+        self.wait.until(
+            lambda d: d.find_element(*self.ERROR_MSG).text.strip() != ""
+        )
         return self.driver.find_element(*self.ERROR_MSG).text
