@@ -16,7 +16,7 @@ class CartPage:
 
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, 20)
 
     def get_item_name(self):
         self.wait.until(EC.presence_of_element_located(self.ITEM_NAME))

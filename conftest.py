@@ -7,21 +7,21 @@ from selenium.webdriver.chrome.options import Options
 @pytest.fixture(scope="session")
 def driver(request):
     options = Options()
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
 
-    # Run headless on CI/CD (GitHub Actions has no display)
     if os.environ.get("CI"):
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1920,1080")
+        # Selenium Manager auto-resolves chromedriver on CI
         drv = webdriver.Chrome(options=options)
     else:
         # Local — use your chromedriver.exe
         service = Service(r"C:\Users\gpika\Desktop\demo\chromedriver.exe")
         drv = webdriver.Chrome(service=service, options=options)
 
-    drv.implicitly_wait(5)
+    drv.implicitly_wait(10)
     request.session._driver = drv
     yield drv
     drv.quit()

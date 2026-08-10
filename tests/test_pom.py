@@ -13,7 +13,7 @@ def do_login(driver):
     page = LoginPage(driver)
     page.open()
     page.login("standard_user", "secret_sauce")
-    WebDriverWait(driver, 15).until(
+    WebDriverWait(driver, 30).until(
         lambda d: "inventory" in d.current_url
     )
 
@@ -54,7 +54,7 @@ def test_view_cart(driver):
     page = InventoryPage(driver)
     page.add_backpack_to_cart()
     page.go_to_cart()
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 20).until(
         lambda d: "cart" in d.current_url
     )
     cart = CartPage(driver)
@@ -70,22 +70,22 @@ def test_checkout(driver):
     page = InventoryPage(driver)
     page.add_backpack_to_cart()
     page.go_to_cart()
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 20).until(
         lambda d: "cart" in d.current_url
     )
     cart = CartPage(driver)
     cart.click_checkout()
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 20).until(
         lambda d: "checkout-step-one" in d.current_url
     )
     cart.fill_form("Gopika", "Sundar", "600017")
     cart.click_continue()
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 20).until(
         lambda d: "checkout-step-two" in d.current_url
     )
     assert cart.get_page_title() == "Checkout: Overview"
     cart.click_finish()
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 20).until(
         lambda d: "checkout-complete" in d.current_url
     )
     assert cart.get_confirmation() == "Thank you for your order!"
@@ -99,7 +99,7 @@ def test_logout(driver):
     do_login(driver)
     page = InventoryPage(driver)
     page.logout()
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 20).until(
         lambda d: d.current_url == "https://www.saucedemo.com/"
     )
     assert driver.current_url == "https://www.saucedemo.com/"
@@ -146,7 +146,7 @@ def test_login_data_driven(driver, row):
     page.login(username, password)
 
     if row["expected_result"] == "PASS":
-        WebDriverWait(driver, 10).until(
+        WebDriverWait(driver, 20).until(
             lambda d: "inventory" in d.current_url
         )
         assert "inventory" in driver.current_url

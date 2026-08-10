@@ -26,12 +26,9 @@ jobs:
     - name: Install Chrome
       uses: browser-actions/setup-chrome@v1
 
-    - name: Install ChromeDriver
-      uses: nanasess/setup-chromedriver@v2
-
     - name: Run tests
       run: |
-        pytest tests/test_pom.py -v --html=report.html --junitxml=results.xml
+        pytest tests/test_pom.py -v --html=report.html --self-contained-html --junitxml=results.xml
       continue-on-error: true
 
     - name: Upload HTML Report
@@ -40,6 +37,13 @@ jobs:
       with:
         name: test-report
         path: report.html
+
+    - name: Upload Screenshots
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: screenshots
+        path: screenshots/
 
     - name: Upload Test Results
       uses: actions/upload-artifact@v4

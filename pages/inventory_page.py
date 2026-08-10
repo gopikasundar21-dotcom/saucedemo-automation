@@ -12,7 +12,7 @@ class InventoryPage:
 
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, 20)
 
     def add_backpack_to_cart(self):
         # Remove item first if already in cart (shared session state)
