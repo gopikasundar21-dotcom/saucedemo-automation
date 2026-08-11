@@ -24,12 +24,9 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install pytest pytest-html allure-pytest openpyxl; fi
 
-      - name: Run tests (generate Allure results)
+      - name: Run tests and generate reports
         run: |
-          pytest -q --maxfail=1 --disable-warnings --alluredir=allure_results || true
-
-      - name: Generate HTML/Excel report
-        run: |
+          python -m pip install --upgrade pip
           python generate_report.py || true
 
       - name: Upload Allure results

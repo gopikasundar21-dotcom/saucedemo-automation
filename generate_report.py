@@ -7,12 +7,13 @@ import re
 import os
 
 # ── STEP 1: Run pytest and capture output ───────────────────────────────────
-print("🚀 Running test suite...")
+print("🚀 Running test suite (platform-independent)...")
+# Run pytest in the current workspace (avoid hard-coded Windows paths)
 result = subprocess.run(
-    ["pytest", "tests/test_pom.py", "-v", "--tb=short", "--html=report.html"],
+    ["pytest", "-v", "--tb=short", "--html=report.html", "--alluredir=allure_results"],
     capture_output=True,
     text=True,
-    cwd=r"C:\Users\gpika\Desktop\demo"
+    cwd=os.getcwd(),
 )
 output = result.stdout + result.stderr
 print(output)
@@ -191,10 +192,14 @@ for i, width in enumerate(col_widths, 1):
     ws.column_dimensions[get_column_letter(i)].width = width
 
 # ── Save File ────────────────────────────────────────────────────────────────
-output_path = r"C:\Users\gpika\Desktop\demo\TestExecutionReport.xlsx"
+output_path = os.path.join(os.getcwd(), "TestExecutionReport.xlsx")
 wb.save(output_path)
 print(f"\n✅ Excel report saved → {output_path}")
 print(f"📊 Summary: {passed_count} Passed | {failed_count} Failed | {total} Total")
 
-# ── Auto Open the Excel file ─────────────────────────────────────────────────
-os.startfile(output_path)
+# Do not attempt to auto-open the file on CI/runners
+try:
+    if os.name == "nt":
+        os.startfile(output_path)
+except Exception:
+    pass
