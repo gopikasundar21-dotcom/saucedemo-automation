@@ -10,7 +10,7 @@ import os
 print("🚀 Running test suite (platform-independent)...")
 # Run pytest in the current workspace (avoid hard-coded Windows paths)
 result = subprocess.run(
-    ["pytest", "-v", "--tb=short", "--html=report.html", "--alluredir=allure_results"],
+    ["pytest", "-q", "--disable-warnings", "--tb=short", "--html=report.html", "--alluredir=allure_results"],
     capture_output=True,
     text=True,
     cwd=os.getcwd(),

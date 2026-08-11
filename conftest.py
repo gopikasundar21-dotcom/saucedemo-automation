@@ -27,6 +27,19 @@ def driver(request):
     drv.quit()
 
 
+@pytest.fixture(scope="function")
+def logged_in(driver):
+    from pages.login_page import LoginPage
+    from selenium.webdriver.support.ui import WebDriverWait
+
+    driver.delete_all_cookies()
+    login_page = LoginPage(driver)
+    login_page.open()
+    login_page.login("standard_user", "secret_sauce")
+    WebDriverWait(driver, 20).until(lambda d: "inventory" in d.current_url)
+    yield driver
+
+
 # ── Auto screenshot on every test failure ──────────
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
